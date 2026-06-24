@@ -6,6 +6,8 @@ export default defineConfig({
   outDir: 'dist',
   sourcemap: true,
   clean: true,
+  // 'use client' tells Next.js App Router that all exports are client components.
+  banner: { js: "'use client';" },
   // Keep React and all TipTap packages out of the bundle —
   // consumers must have them installed as peer dependencies.
   external: [

@@ -1,6 +1,6 @@
 {
   "name": "inkora",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Inkora — plug-and-play TipTap v3 rich text editor for React with toolbar, media, tables, math and dark mode",
   "keywords": [
     "inkora",
@@ -25,14 +25,17 @@
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
+  "types": "types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./types/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
   },
   "files": [
     "dist",
+    "types",
     "README.md",
     "LICENSE"
   ],
@@ -77,7 +80,6 @@
     }
   },
   "dependencies": {
-    "inkora": "^0.1.0",
     "lowlight": "^3.0.0",
     "tippy.js": "^6.3.7",
     "tiptap-extension-global-drag-handle": "^0.1.18"

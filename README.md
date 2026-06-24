@@ -1,5 +1,10 @@
 # Inkora
 
+[![npm version](https://img.shields.io/npm/v/inkora?color=0b57d0&label=npm)](https://www.npmjs.com/package/inkora)
+[![CI](https://github.com/ishubarman7/inkora/actions/workflows/ci.yml/badge.svg)](https://github.com/ishubarman7/inkora/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue?logo=typescript&logoColor=white)](types/index.d.ts)
+
 > Plug-and-play rich text editor for React — built on TipTap v3 and ProseMirror.
 
 Inkora gives you a production-ready WYSIWYG editor in one import. No configuration required to get started, fully customisable when you need it. Ships with a full menu-bar editor, a lightweight toolbar editor, and a read-only viewer — all styled with CSS variables so they adapt to any design system.
