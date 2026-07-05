@@ -69,6 +69,7 @@ Inkora gives you a production-ready WYSIWYG editor in one import. No configurati
 - Resizable columns
 
 **Advanced**
+- `/` Slash command menu — type `/` to insert headings, lists, quotes, code blocks, tables, callouts, and more
 - LaTeX math formulas (KaTeX, optional peer dep)
 - @ Mentions with custom data source
 - `#` Hashtags
@@ -109,6 +110,7 @@ npm install inkora \
   @tiptap/extension-placeholder \
   @tiptap/extension-subscript \
   @tiptap/extension-superscript \
+  @tiptap/suggestion \
   @tiptap/extension-table \
   @tiptap/extension-task-item \
   @tiptap/extension-task-list \
@@ -457,6 +459,7 @@ These TipTap extensions are loaded automatically. You do not need to configure t
 | `Youtube` *(extended)* | YouTube / Vimeo embeds |
 | `Hashtag` *(custom)* | `#tag` input rule |
 | `Mention` | `@mention` with configurable suggestion source |
+| `SlashCommand` *(custom)* | `/` menu to insert headings, lists, quotes, code blocks, tables, callouts, dividers |
 | `Placeholder` | Ghost placeholder text |
 | `CharacterCount` | Character and word count data |
 | `Dropcursor` | Drag-and-drop position indicator |

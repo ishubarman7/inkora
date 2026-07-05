@@ -28,6 +28,7 @@ import { Callout } from './Callout.js';
 import { Video } from './Video.js';
 import { Audio } from './Audio.js';
 import { Hashtag } from './Hashtag.js';
+import { SlashCommand } from './SlashCommand.jsx';
 import CodeBlock from '../components/CodeBlock.jsx';
 import { ImageNodeView } from '../components/ImageNodeView.jsx';
 import { VideoNodeView } from '../components/VideoNodeView.jsx';
@@ -216,7 +217,8 @@ export const createEditorExtensions = (config = {}) => {
 
   if (isEditable) {
     extensions.push(
-      GlobalDragHandle.configure({ dragHandleWidth: 20, scrollTreshold: 100 })
+      GlobalDragHandle.configure({ dragHandleWidth: 20, scrollTreshold: 100 }),
+      SlashCommand
     );
   }
 
