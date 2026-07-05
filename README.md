@@ -9,6 +9,14 @@
 
 Inkora gives you a production-ready WYSIWYG editor in one import. No configuration required to get started, fully customisable when you need it. Ships with a full menu-bar editor, a lightweight toolbar editor, and a read-only viewer — all styled with CSS variables so they adapt to any design system.
 
+<p align="center"><strong>Contributors</strong></p>
+
+<p align="center">
+  <a href="https://github.com/ishubarman7" title="Ishu Barman"><img src="https://images.weserv.nl/?url=github.com/ishubarman7.png&amp;w=160&amp;h=160&amp;fit=cover&amp;mask=circle" width="80" height="80" alt="Ishu Barman"></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/VaibhavRawat27" title="Vaibhav Rawat"><img src="https://images.weserv.nl/?url=github.com/VaibhavRawat27.png&amp;w=160&amp;h=160&amp;fit=cover&amp;mask=circle" width="80" height="80" alt="Vaibhav Rawat"></a>
+</p>
+
 ---
 
 ## Table of contents
