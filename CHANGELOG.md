@@ -5,10 +5,11 @@ All notable changes to Inkora are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.0.0] — 2026-07-05
 
 ### Added
-- Slash command menu — type `/` at the start of a line to insert headings, bullet/numbered/task lists, quotes, code blocks, tables, callouts, and dividers without leaving the keyboard. New peer dependency: `@tiptap/suggestion`.
+- Slash command menu — type `/` at the start of a line to insert headings, bullet/numbered/task lists, quotes, code blocks, tables, callouts, and dividers without leaving the keyboard. New peer dependency: `@tiptap/suggestion`. Thanks to [@VaibhavRawat27](https://github.com/VaibhavRawat27).
+- First stable release.
 
 ---
 

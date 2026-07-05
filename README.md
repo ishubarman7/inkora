@@ -30,6 +30,7 @@ Inkora gives you a production-ready WYSIWYG editor in one import. No configurati
 - [Built-in extensions](#built-in-extensions)
 - [Framework notes](#framework-notes)
 - [Contributing](#contributing)
+- [Contributors](#contributors)
 - [License](#license)
 
 ---
@@ -509,6 +510,15 @@ import 'katex/dist/katex.min.css';
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to set up the dev environment, submit pull requests, and report bugs.
+
+---
+
+## Contributors
+
+Thanks to everyone who has helped build Inkora:
+
+- [Ishu Barman](https://github.com/ishubarman7) — creator and maintainer
+- [Vaibhav Rawat](https://github.com/VaibhavRawat27) — slash command menu
 
 ---
 
