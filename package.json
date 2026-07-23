@@ -1,6 +1,6 @@
 {
   "name": "inkora",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Inkora — plug-and-play TipTap v3 rich text editor for React with toolbar, media, tables, math and dark mode",
   "keywords": [
     "inkora",

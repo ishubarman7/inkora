@@ -99,8 +99,8 @@ export const createEditorExtensions = (config = {}) => {
         return {
           ...this.parent?.(),
           width: {
-            default: '100%',
-            parseHTML: el => el.getAttribute('data-width') || el.style.width || '100%',
+            default: '100px',
+            parseHTML: el => el.getAttribute('data-width') || el.style.width || '100px',
             renderHTML: attrs => ({ 'data-width': attrs.width, style: `width:${attrs.width}` }),
           },
           shape: {
@@ -122,6 +122,21 @@ export const createEditorExtensions = (config = {}) => {
             default: 'left',
             parseHTML: el => el.getAttribute('data-align') || 'left',
             renderHTML: attrs => ({ 'data-align': attrs.align }),
+          },
+          rotate: {
+            default: 0,
+            parseHTML: el => parseInt(el.getAttribute('data-rotate') || '0', 10),
+            renderHTML: attrs => ({ 'data-rotate': attrs.rotate }),
+          },
+          flipX: {
+            default: false,
+            parseHTML: el => el.getAttribute('data-flipx') === 'true',
+            renderHTML: attrs => ({ 'data-flipx': attrs.flipX }),
+          },
+          flipY: {
+            default: false,
+            parseHTML: el => el.getAttribute('data-flipy') === 'true',
+            renderHTML: attrs => ({ 'data-flipy': attrs.flipY }),
           },
         };
       },

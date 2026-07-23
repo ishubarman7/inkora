@@ -107,6 +107,9 @@ export default function BubbleMenu({ editor }) {
   const getEditorEl = () =>
     editor?.options?.element?.closest?.('.inkora-editor') ?? document.body;
 
+  const getScrollEl = () =>
+    editor?.options?.element?.closest?.('.rte-scroll-container') ?? document.body;
+
   useEffect(() => {
     if (!editor) return;
     // Reset panel when selection changes
@@ -153,11 +156,11 @@ export default function BubbleMenu({ editor }) {
         editor={editor}
         tippyOptions={{
           duration: 120,
-          placement: 'top',
+          placement: 'bottom',
           interactive: true,
           // Append inside the editor wrapper so the bubble is not affected by
           // CSS transforms on ancestor elements (which break position:fixed).
-          appendTo: getEditorEl,
+          appendTo: getScrollEl,
           popperOptions: {
             // absolute strategy positions relative to the nearest positioned
             // ancestor (the editor wrapper with position:relative), so it's
@@ -167,15 +170,15 @@ export default function BubbleMenu({ editor }) {
               {
                 name: 'preventOverflow',
                 options: {
-                  boundary: getEditorEl(),
+                  boundary: 'clippingParents',
                   padding: 8,
-                  altAxis: true,
+                  altAxis: false,
                 },
               },
               {
                 name: 'flip',
                 options: {
-                  boundary: getEditorEl(),
+                  boundary: 'clippingParents',
                   padding: 8,
                 },
               },

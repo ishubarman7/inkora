@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 
 // ── Themes ────────────────────────────────────────────────────────────────────
@@ -122,6 +122,57 @@ export default function CodeBlock({ node, updateAttributes, extension, editor })
 
   const lineCount = (node.textContent.match(/\n/g) || []).length + 1;
   const displayLang = defaultLanguage || 'plaintext';
+
+  const preRef = useRef(null);
+  const gutterRef = useRef(null);
+  const hiddenRef = useRef(null);
+
+  const lines = node.textContent.split('\n');
+
+  useLayoutEffect(() => {
+    if (!preRef.current || !gutterRef.current || !hiddenRef.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (!preRef.current || !gutterRef.current || !hiddenRef.current) return;
+      const preWidth = preRef.current.clientWidth;
+      const contentWidth = Math.max(0, preWidth - 32);
+      
+      hiddenRef.current.style.width = `${contentWidth}px`;
+
+      const hiddenDivs = hiddenRef.current.children;
+      const gutterDivs = gutterRef.current.children;
+
+      for (let i = 0; i < hiddenDivs.length; i++) {
+        if (hiddenDivs[i] && gutterDivs[i]) {
+          const height = hiddenDivs[i].getBoundingClientRect().height;
+          gutterDivs[i].style.height = `${height}px`;
+          gutterDivs[i].style.lineHeight = '24px';
+        }
+      }
+    });
+
+    resizeObserver.observe(preRef.current);
+
+    // Initial measurement
+    const preWidth = preRef.current.clientWidth;
+    const contentWidth = Math.max(0, preWidth - 32);
+    hiddenRef.current.style.width = `${contentWidth}px`;
+
+    const hiddenDivs = hiddenRef.current.children;
+    const gutterDivs = gutterRef.current.children;
+
+    for (let i = 0; i < hiddenDivs.length; i++) {
+      if (hiddenDivs[i] && gutterDivs[i]) {
+        const height = hiddenDivs[i].getBoundingClientRect().height;
+        gutterDivs[i].style.height = `${height}px`;
+        gutterDivs[i].style.lineHeight = '24px';
+      }
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [node.textContent, collapsed]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(node.textContent).then(() => {
@@ -328,9 +379,10 @@ export default function CodeBlock({ node, updateAttributes, extension, editor })
 
       {/* Code body */}
       {!collapsed && (
-        <div style={{ display: 'flex', fontFamily: 'inherit', fontSize: 13, lineHeight: '24px', borderRadius: '0 0 11px 11px', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', fontFamily: 'inherit', fontSize: 13, lineHeight: '24px', borderRadius: '0 0 11px 11px', overflow: 'hidden', position: 'relative' }}>
           {/* Line numbers */}
           <div
+            ref={gutterRef}
             contentEditable={false}
             aria-hidden="true"
             style={{
@@ -342,14 +394,45 @@ export default function CodeBlock({ node, updateAttributes, extension, editor })
               flexShrink: 0, fontSize: 12,
             }}
           >
-            {Array.from({ length: lineCount }, (_, i) => (
-              <div key={i} style={{ lineHeight: '24px' }}>{i + 1}</div>
+            {lines.map((_, i) => (
+              <div key={i} style={{ height: '24px', lineHeight: '24px' }}>{i + 1}</div>
             ))}
           </div>
           {/* Code content */}
-          <pre style={{ flex: 1, padding: '16px', margin: 0, background: 'transparent', overflowX: 'auto', color: theme.textColor }}>
+          <pre ref={preRef} style={{ flex: 1, padding: '16px', margin: 0, background: 'transparent', overflowX: 'auto', color: theme.textColor }}>
             <NodeViewContent as="code" className={`language-${displayLang}`} style={{ display: 'block', color: 'inherit' }} />
           </pre>
+
+          {/* Hidden replica to measure wrapped line heights */}
+          <div
+            ref={hiddenRef}
+            contentEditable={false}
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              visibility: 'hidden',
+              height: 0,
+              overflow: 'hidden',
+              pointerEvents: 'none',
+              fontFamily: "'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.875rem',
+              lineHeight: '24px',
+              left: '4.8rem',
+            }}
+          >
+            {lines.map((line, i) => (
+              <div
+                key={i}
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-all',
+                  overflowWrap: 'break-word',
+                }}
+              >
+                {line || ' '}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

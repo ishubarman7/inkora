@@ -68,11 +68,17 @@ export function InkoraEditor({
   width = '100%',
   height,
   minHeight = 420,
+  maxWidth = '100%',
 }) {
   const [isMounted, setIsMounted] = useState(false);
   const [saveStatus, setSaveStatus] = useState('saved');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const editorRef = useRef(null);
+  
+  // We'll search for the next edit target inside the editor render block:
+  // <div style={{ padding: '26px 34px', width: '100%', maxWidth, margin: '0 auto' }}>
+  // instead of the original <div style={{ padding: '26px 34px', width: '100%' }}>.
+  // We specify this replacements at compile time.
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -243,7 +249,7 @@ export function InkoraEditor({
       <div className="rte-scroll-container" style={{ background: 'var(--rte-page)', overflowY: 'auto', ...(isFullscreen ? { flex: 1 } : height ? { height: typeof height === 'number' ? `${height}px` : height } : { minHeight }) }}>
         <BubbleMenu editor={editor} />
         <TableResizeHandle editor={editor} />
-        <div style={{ padding: '26px 34px', maxWidth: 860, margin: '0 auto' }}>
+        <div style={{ padding: '26px 34px', width: '100%', maxWidth, margin: '0 auto' }}>
           <EditorContent editor={editor} />
         </div>
       </div>

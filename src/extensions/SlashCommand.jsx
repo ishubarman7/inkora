@@ -113,18 +113,30 @@ const SLASH_ITEMS = [
 
 const getSlashItems = ({ query }) => {
   const q = query.toLowerCase().trim();
-  if (!q) return SLASH_ITEMS.slice(0, 10);
+  if (!q) return SLASH_ITEMS;
   return SLASH_ITEMS.filter(item =>
     item.title.toLowerCase().includes(q) || item.keywords.some(k => k.includes(q))
-  ).slice(0, 10);
+  );
 };
 
 // ─── Dropdown UI ───────────────────────────────────────────────────────────────
 
 const SlashList = React.forwardRef((props, ref) => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const containerRef = React.useRef(null);
 
   React.useEffect(() => setSelectedIndex(0), [props.items]);
+
+  React.useEffect(() => {
+    if (!containerRef.current) return;
+    const activeItem = containerRef.current.querySelector('.rte-slash-item.active');
+    if (activeItem) {
+      activeItem.scrollIntoView({
+        block: 'nearest',
+        behavior: 'auto'
+      });
+    }
+  }, [selectedIndex]);
 
   const selectItem = (index) => {
     const item = props.items[index];
@@ -158,7 +170,7 @@ const SlashList = React.forwardRef((props, ref) => {
   }
 
   return (
-    <div className="rte-slash-menu">
+    <div ref={containerRef} className="rte-slash-menu">
       {props.items.map((item, index) => {
         const Icon = item.icon;
         return (
