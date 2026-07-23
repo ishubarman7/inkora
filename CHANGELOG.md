@@ -5,6 +5,16 @@ All notable changes to Inkora are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.0.4] — 2026-07-23
+
+### Changed
+- Compact toolbar styling: reduced format button dimensions to 24px and optimized spacing/gaps.
+- Relocated Paragraph Style and Font Family selectors from FormatBar into the MenuBar's View menu as hover submenus.
+- Relocated Undo/Redo actions to the MenuBar next to Fullscreen and removed redundant theme toggle.
+- Redesigned the table size picker to toggle on click rather than hover.
+
+---
+
 ## [1.0.0] — 2026-07-05
 
 ### Added
