@@ -68,17 +68,12 @@ export function InkoraEditor({
   width = '100%',
   height,
   minHeight = 420,
-  maxWidth = '100%',
+  syncInstantly = false,
 }) {
   const [isMounted, setIsMounted] = useState(false);
   const [saveStatus, setSaveStatus] = useState('saved');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const editorRef = useRef(null);
-  
-  // We'll search for the next edit target inside the editor render block:
-  // <div style={{ padding: '26px 34px', width: '100%', maxWidth, margin: '0 auto' }}>
-  // instead of the original <div style={{ padding: '26px 34px', width: '100%' }}>.
-  // We specify this replacements at compile time.
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -129,6 +124,7 @@ export function InkoraEditor({
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
       if (onChange) onChange(json);
+      setSaveStatus('unsaved');
     },
     editorProps: {
       attributes: {
@@ -192,10 +188,10 @@ export function InkoraEditor({
 
   useEffect(() => {
     if (!editor || !onSave) return;
-    setSaveStatus('unsaved');
-    const t = setTimeout(() => handleSave(editor.getJSON()), 1000);
+    const delay = syncInstantly ? 0 : 1000;
+    const t = setTimeout(() => handleSave(editor.getJSON()), delay);
     return () => clearTimeout(t);
-  }, [editor?.state.doc, handleSave]);
+  }, [editor, onSave, editor?.state.doc, handleSave, syncInstantly]);
 
   const wordCount = editor?.storage.characterCount.words() ?? 0;
   const charCount = editor?.storage.characterCount.characters() ?? 0;
@@ -249,7 +245,7 @@ export function InkoraEditor({
       <div className="rte-scroll-container" style={{ background: 'var(--rte-page)', overflowY: 'auto', ...(isFullscreen ? { flex: 1 } : height ? { height: typeof height === 'number' ? `${height}px` : height } : { minHeight }) }}>
         <BubbleMenu editor={editor} />
         <TableResizeHandle editor={editor} />
-        <div style={{ padding: '26px 34px', width: '100%', maxWidth, margin: '0 auto' }}>
+        <div style={{ padding: '26px 34px', width: '100%' }}>
           <EditorContent editor={editor} />
         </div>
       </div>

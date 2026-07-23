@@ -144,7 +144,7 @@ export const createEditorExtensions = (config = {}) => {
         return ReactNodeViewRenderer(ImageNodeView);
       },
     }).configure({ allowBase64: true }),
-    Table.configure({ resizable: true }),
+    Table.configure({ resizable: isEditable }),
     TableRow.extend({
       addAttributes() {
         return {

@@ -33,7 +33,7 @@ const DARK_VARS = {
   '--rte-shadow': '0 1px 2px rgba(0,0,0,.5),0 10px 30px rgba(0,0,0,.45)',
 };
 
-export function InkoraViewer({ content, theme = 'light', maxWidth = '860px' }) {
+export function InkoraViewer({ content, theme = 'light' }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => { setIsMounted(true); }, []);
@@ -85,7 +85,7 @@ export function InkoraViewer({ content, theme = 'light', maxWidth = '860px' }) {
       }}
     >
       <style dangerouslySetInnerHTML={{ __html: editorStyles }} />
-      <div className="viewer-inner" style={{ padding: '16px 20px', width: '100%', maxWidth, margin: '0 auto' }}>
+      <div className="viewer-inner" style={{ padding: '16px 20px', width: '100%' }}>
         <EditorContent editor={editor} />
       </div>
     </div>
