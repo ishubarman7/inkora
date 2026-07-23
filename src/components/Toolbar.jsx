@@ -16,7 +16,7 @@ const TOOLBAR_CSS = `
 .rte-toolbar * { box-sizing: border-box; }
 .rte-btn {
   display: inline-flex; align-items: center; justify-content: center;
-  height: 32px; min-width: 32px; padding: 0 5px; border: none;
+  height: 24px; min-width: 24px; padding: 0 2px; border: none;
   background: transparent; color: var(--rte-ink); border-radius: 7px;
   cursor: pointer; transition: background 0.1s, color 0.1s; flex-shrink: 0;
 }
@@ -24,9 +24,9 @@ const TOOLBAR_CSS = `
 .rte-btn.is-active { background: var(--rte-accent-soft); color: var(--rte-accent); }
 .rte-btn:disabled { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
 .rte-menu-btn {
-  padding: 5px 10px; border: none; background: transparent;
+  padding: 4px 6px; border: none; background: transparent;
   color: var(--rte-ink); font-family: 'Roboto', Arial, sans-serif;
-  font-size: 13.5px; border-radius: 6px; cursor: pointer;
+  font-size: 12px; border-radius: 6px; cursor: pointer;
   transition: background 0.1s; white-space: nowrap;
 }
 .rte-menu-btn:hover, .rte-menu-btn.open { background: var(--rte-hover); }
@@ -205,7 +205,7 @@ const FONTS = [
 ];
 
 function Sep() {
-  return <div style={{ width: 1, height: 22, background: 'var(--rte-border)', margin: '0 5px', flexShrink: 0 }} />;
+  return <div style={{ width: 1, height: 16, background: 'var(--rte-border)', margin: '0 3px', flexShrink: 0 }} />;
 }
 function DropSep() {
   return <div className="rte-drop-sep" />;
@@ -244,14 +244,14 @@ function MenuBarMenu({ label, name, open, onToggle, children, panelStyle }) {
 
 function TableGridPicker({ editor, label, tableHover, setTableHover, subOpen, setSubOpen, onClose }) {
   return (
-    <div
-      onMouseEnter={() => setSubOpen('table')}
-      onMouseLeave={() => { setSubOpen(null); setTableHover({ rows: 0, cols: 0 }); }}
-    >
+    <div>
       <button
         className="rte-drop-item"
         style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
-        onMouseDown={e => e.preventDefault()}
+        onMouseDown={e => {
+          e.preventDefault();
+          setSubOpen(subOpen === 'table' ? null : 'table');
+        }}
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 12 }}>⊞</span>
@@ -262,7 +262,10 @@ function TableGridPicker({ editor, label, tableHover, setTableHover, subOpen, se
         </svg>
       </button>
       {subOpen === 'table' && (
-        <div style={{ padding: '6px 6px 8px', borderTop: '1px solid var(--rte-border)', marginTop: 2 }}>
+        <div 
+          style={{ padding: '6px 6px 8px', borderTop: '1px solid var(--rte-border)', marginTop: 2 }}
+          onMouseLeave={() => setTableHover({ rows: 0, cols: 0 })}
+        >
           <div style={{
             fontSize: 11, fontWeight: 600, textAlign: 'center', marginBottom: 6,
             color: tableHover.rows > 0 ? 'var(--rte-accent)' : 'var(--rte-muted)',
@@ -323,7 +326,7 @@ function MenuBar({ editor, open, onToggle, onClose, onToggleTheme, theme, imageR
   const newDoc = () => { onClose(); onSelectModal('confirm_clear'); };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 1, padding: '5px 8px', borderBottom: '1px solid var(--rte-border)', position: 'relative', zIndex: 100, borderTopLeftRadius: 13, borderTopRightRadius: 13 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 1, padding: '3px 6px', borderBottom: '1px solid var(--rte-border)', position: 'relative', zIndex: 100, borderTopLeftRadius: 13, borderTopRightRadius: 13 }}>
 
       <MenuBarMenu label="File" name="file" open={open} onToggle={onToggle}>
         <DropItem onAction={newDoc}>New File</DropItem>
@@ -363,6 +366,54 @@ function MenuBar({ editor, open, onToggle, onClose, onToggleTheme, theme, imageR
           if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
           else document.exitFullscreen?.();
         }}>Full screen</DropItem>
+        <DropSep />
+        <div
+          className="rte-drop-item-container"
+          onMouseEnter={() => setSubOpen('view_styles')}
+          onMouseLeave={() => setSubOpen(null)}
+        >
+          <button className="rte-drop-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }} onMouseDown={e => e.preventDefault()}>
+            Paragraph style
+            <span style={{ fontSize: 9, color: 'var(--rte-muted)' }}>▶</span>
+          </button>
+          {subOpen === 'view_styles' && (
+            <div className="rte-submenu-panel">
+              <DropItem onAction={() => { editor?.chain().focus().setParagraph().run(); onClose(); }}>Normal text</DropItem>
+              <DropItem style={{ fontSize: 16, fontWeight: 600 }} onAction={() => { editor?.chain().focus().toggleHeading({ level: 1 }).run(); onClose(); }}>Heading 1</DropItem>
+              <DropItem style={{ fontSize: 14, fontWeight: 600 }} onAction={() => { editor?.chain().focus().toggleHeading({ level: 2 }).run(); onClose(); }}>Heading 2</DropItem>
+              <DropItem style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.04em', color: 'var(--rte-muted)' }} onAction={() => { editor?.chain().focus().toggleHeading({ level: 3 }).run(); onClose(); }}>Heading 3</DropItem>
+              <DropItem style={{ fontStyle: 'italic', color: 'var(--rte-muted)' }} onAction={() => { editor?.chain().focus().toggleBlockquote().run(); onClose(); }}>Quote</DropItem>
+              <DropItem style={{ fontFamily: "'Roboto Mono', monospace", fontSize: 12 }} onAction={() => { editor?.chain().focus().setCodeBlock().run(); onClose(); }}>Code block</DropItem>
+            </div>
+          )}
+        </div>
+        <div
+          className="rte-drop-item-container"
+          onMouseEnter={() => setSubOpen('view_fonts')}
+          onMouseLeave={() => setSubOpen(null)}
+        >
+          <button className="rte-drop-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }} onMouseDown={e => e.preventDefault()}>
+            Font family
+            <span style={{ fontSize: 9, color: 'var(--rte-muted)' }}>▶</span>
+          </button>
+          {subOpen === 'view_fonts' && (
+            <div className="rte-submenu-panel">
+              {FONTS.map(f => (
+                <DropItem
+                  key={f.value}
+                  style={{ fontFamily: f.value || 'inherit', fontSize: 12.5 }}
+                  onAction={() => {
+                    if (f.value) editor?.chain().focus().setFontFamily(f.value).run();
+                    else editor?.chain().focus().unsetFontFamily().run();
+                    onClose();
+                  }}
+                >
+                  {f.label}
+                </DropItem>
+              ))}
+            </div>
+          )}
+        </div>
       </MenuBarMenu>
 
       <MenuBarMenu label="Insert" name="insert" open={open} onToggle={onToggle}>
@@ -460,6 +511,30 @@ function MenuBar({ editor, open, onToggle, onClose, onToggleTheme, theme, imageR
           <span style={{ textDecoration: 'line-through' }}>Strikethrough</span>
         </DropItem>
         <DropSep />
+        <DropItem onAction={() => { onClose(); editor?.chain().focus().toggleSubscript().run(); }}>Subscript</DropItem>
+        <DropItem onAction={() => { onClose(); editor?.chain().focus().toggleSuperscript().run(); }}>Superscript</DropItem>
+        <DropSep />
+        <div
+          className="rte-drop-item-container"
+          onMouseEnter={() => setSubOpen('lineheight')}
+          onMouseLeave={() => setSubOpen(null)}
+        >
+          <button className="rte-drop-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }} onMouseDown={e => e.preventDefault()}>
+            Line spacing
+            <span style={{ fontSize: 9, color: 'var(--rte-muted)' }}>▶</span>
+          </button>
+          {subOpen === 'lineheight' && (
+            <div className="rte-submenu-panel">
+              <DropItem onAction={() => { editor?.chain().focus().setLineHeight('1').run(); onClose(); }}>Single</DropItem>
+              <DropItem onAction={() => { editor?.chain().focus().setLineHeight('1.15').run(); onClose(); }}>1.15</DropItem>
+              <DropItem onAction={() => { editor?.chain().focus().setLineHeight('1.5').run(); onClose(); }}>1.5</DropItem>
+              <DropItem onAction={() => { editor?.chain().focus().setLineHeight('2').run(); onClose(); }}>Double</DropItem>
+              <DropItem onAction={() => { editor?.chain().focus().setLineHeight('2.5').run(); onClose(); }}>2.5</DropItem>
+              <DropItem onAction={() => { editor?.chain().focus().setLineHeight('3').run(); onClose(); }}>Triple</DropItem>
+            </div>
+          )}
+        </div>
+        <DropSep />
         <DropItem onAction={() => { onClose(); editor?.chain().focus().toggleHeading({ level: 1 }).run(); }}
           style={{ fontSize: 18, fontWeight: 600 }}>Heading 1</DropItem>
         <DropItem onAction={() => { onClose(); editor?.chain().focus().toggleHeading({ level: 2 }).run(); }}
@@ -475,14 +550,6 @@ function MenuBar({ editor, open, onToggle, onClose, onToggleTheme, theme, imageR
 
       <MenuBarMenu label="Tools" name="tools" open={open} onToggle={onToggle}>
         <DropItem onAction={() => { onClose(); onSelectModal('word_count'); }}>Word count</DropItem>
-        <DropItem onAction={() => {
-          onClose();
-          editor?.commands.toggleSubscript();
-        }}>Subscript</DropItem>
-        <DropItem onAction={() => {
-          onClose();
-          editor?.commands.toggleSuperscript();
-        }}>Superscript</DropItem>
       </MenuBarMenu>
 
       <MenuBarMenu label="Help" name="help" open={open} onToggle={onToggle}>
@@ -491,19 +558,21 @@ function MenuBar({ editor, open, onToggle, onClose, onToggleTheme, theme, imageR
       </MenuBarMenu>
 
       <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}>
+        <button className="rte-btn" title="Undo ⌘Z" disabled={!editor?.can().undo()}
+          onMouseDown={e => { e.preventDefault(); editor?.chain().focus().undo().run(); }}>
+          <UndoIcon size={14} />
+        </button>
+        <button className="rte-btn" title="Redo ⌘Y" disabled={!editor?.can().redo()}
+          onMouseDown={e => { e.preventDefault(); editor?.chain().focus().redo().run(); }}>
+          <RedoIcon size={14} />
+        </button>
+        <Sep />
         <button
           className="rte-btn"
           title={isFullscreen ? 'Minimize screen' : 'Full screen'}
           onMouseDown={e => { e.preventDefault(); onToggleFullscreen && onToggleFullscreen(); }}
         >
-          {isFullscreen ? <MinimizeIcon size={17} /> : <MaximizeIcon size={17} />}
-        </button>
-        <button
-          className="rte-btn"
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          onMouseDown={e => { e.preventDefault(); onToggleTheme && onToggleTheme(); }}
-        >
-          {theme === 'dark' ? <SunIcon size={17} /> : <MoonIcon size={17} />}
+          {isFullscreen ? <MinimizeIcon size={14} /> : <MaximizeIcon size={14} />}
         </button>
       </div>
     </div>
@@ -511,73 +580,6 @@ function MenuBar({ editor, open, onToggle, onClose, onToggleTheme, theme, imageR
 }
 
 // ─── Row 2: Format Bar ─────────────────────────────────────────────────────────
-
-function StylesDropdown({ editor, open, onToggle, onClose }) {
-  const current = editor?.isActive('heading', { level: 1 }) ? 'Heading 1'
-    : editor?.isActive('heading', { level: 2 }) ? 'Heading 2'
-    : editor?.isActive('heading', { level: 3 }) ? 'Heading 3'
-    : editor?.isActive('blockquote') ? 'Quote'
-    : editor?.isActive('codeBlock') ? 'Code block'
-    : 'Normal text';
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <button
-        className={`rte-menu-btn${open === 'styles' ? ' open' : ''}`}
-        style={{ display: 'inline-flex', alignItems: 'center', gap: 5, minWidth: 108, fontSize: 13.5 }}
-        onMouseDown={e => { e.preventDefault(); onToggle('styles'); }}
-      >
-        <span style={{ flex: 1, textAlign: 'left' }}>{current}</span>
-        <ChevronDownIcon size={13} />
-      </button>
-      {open === 'styles' && (
-        <div className="rte-drop-panel" style={{ minWidth: 200 }}>
-          <DropItem onAction={() => { editor?.chain().focus().setParagraph().run(); onClose(); }}>Normal text</DropItem>
-          <DropItem style={{ fontSize: 21, fontWeight: 600 }} onAction={() => { editor?.chain().focus().toggleHeading({ level: 1 }).run(); onClose(); }}>Heading 1</DropItem>
-          <DropItem style={{ fontSize: 17, fontWeight: 600 }} onAction={() => { editor?.chain().focus().toggleHeading({ level: 2 }).run(); onClose(); }}>Heading 2</DropItem>
-          <DropItem style={{ fontSize: 13, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.04em', color: 'var(--rte-muted)' }} onAction={() => { editor?.chain().focus().toggleHeading({ level: 3 }).run(); onClose(); }}>HEADING 3</DropItem>
-          <DropItem style={{ fontStyle: 'italic', color: 'var(--rte-muted)' }} onAction={() => { editor?.chain().focus().toggleBlockquote().run(); onClose(); }}>Quote</DropItem>
-          <DropItem style={{ fontFamily: "'Roboto Mono', monospace", fontSize: 13 }} onAction={() => { editor?.chain().focus().setCodeBlock().run(); onClose(); }}>Code block</DropItem>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function FontDropdown({ editor, open, onToggle, onClose }) {
-  const current = editor?.getAttributes('textStyle').fontFamily || 'Default';
-  const label = FONTS.find(f => f.value === current)?.label || 'Default';
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <button
-        className={`rte-menu-btn${open === 'font' ? ' open' : ''}`}
-        style={{ display: 'inline-flex', alignItems: 'center', gap: 5, minWidth: 84, fontSize: 13.5 }}
-        onMouseDown={e => { e.preventDefault(); onToggle('font'); }}
-      >
-        <span style={{ flex: 1, textAlign: 'left' }}>{label}</span>
-        <ChevronDownIcon size={13} />
-      </button>
-      {open === 'font' && (
-        <div className="rte-drop-panel" style={{ minWidth: 180 }}>
-          {FONTS.map(f => (
-            <DropItem
-              key={f.value}
-              style={{ fontFamily: f.value || 'inherit', fontSize: 14 }}
-              onAction={() => {
-                if (f.value) editor?.chain().focus().setFontFamily(f.value).run();
-                else editor?.chain().focus().unsetFontFamily().run();
-                onClose();
-              }}
-            >
-              {f.label}
-            </DropItem>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function ColorDropdown({ editor, open, onToggle, onClose, textColor, onTextColorChange }) {
   return (
@@ -623,7 +625,7 @@ function HiliteDropdown({ editor, open, onToggle, onClose }) {
         title="Highlight color"
         onMouseDown={e => { e.preventDefault(); onToggle('hilite'); }}
       >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 15l-4 4-3-3 4-4"/><path d="M14.5 4.5l5 5L11 18l-5-5 8.5-8.5Z"/><path d="M4 21h7"/>
         </svg>
       </button>
@@ -666,10 +668,10 @@ function AlignDropdown({ editor, open, onToggle, onClose }) {
     : 'left';
 
   const icons = {
-    left: <AlignLeftIcon size={17} />,
-    center: <AlignCenterIcon size={17} />,
-    right: <AlignRightIcon size={17} />,
-    justify: <AlignJustifyIcon size={17} />,
+    left: <AlignLeftIcon size={14} />,
+    center: <AlignCenterIcon size={14} />,
+    right: <AlignRightIcon size={14} />,
+    justify: <AlignJustifyIcon size={14} />,
   };
 
   return (
@@ -753,11 +755,11 @@ function ListDropdown({ editor, open, onToggle, onClose }) {
   const isOrdered  = editor?.isActive('orderedList');
 
   const currentIcon = isTask ? (
-    <TaskListIcon size={17} />
+    <TaskListIcon size={14} />
   ) : isOrdered ? (
-    <OrderedListIcon size={17} />
+    <OrderedListIcon size={14} />
   ) : (
-    <BulletListIcon size={17} />
+    <BulletListIcon size={14} />
   );
 
   return (
@@ -780,21 +782,21 @@ function ListDropdown({ editor, open, onToggle, onClose }) {
               title="Task list"
               onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleTaskList().run(); onClose(); }}
             >
-              <TaskListIcon size={17} />
+              <TaskListIcon size={14} />
             </button>
             <button
               className={`rte-btn${isBullet ? ' is-active' : ''}`}
               title="Bullet list"
               onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleBulletList().run(); onClose(); }}
             >
-              <BulletListIcon size={17} />
+              <BulletListIcon size={14} />
             </button>
             <button
               className={`rte-btn${isOrdered ? ' is-active' : ''}`}
               title="Numbered list"
               onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleOrderedList().run(); onClose(); }}
             >
-              <OrderedListIcon size={17} />
+              <OrderedListIcon size={14} />
             </button>
           </div>
           {/* Indent row */}
@@ -804,7 +806,7 @@ function ListDropdown({ editor, open, onToggle, onClose }) {
               title="Decrease indent"
               onMouseDown={e => { e.preventDefault(); editor?.chain().focus().liftListItem('listItem').run(); onClose(); }}
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 6H10M21 12H10M21 18H3M7 9l-4 3 4 3"/>
               </svg>
             </button>
@@ -813,7 +815,7 @@ function ListDropdown({ editor, open, onToggle, onClose }) {
               title="Increase indent"
               onMouseDown={e => { e.preventDefault(); editor?.chain().focus().sinkListItem('listItem').run(); onClose(); }}
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 6H10M21 12H10M21 18H3M3 9l4 3-4 3"/>
               </svg>
             </button>
@@ -824,7 +826,7 @@ function ListDropdown({ editor, open, onToggle, onClose }) {
   );
 }
 
-function FormatBar({ editor, open, onToggle, onClose, imageRef, videoRef, audioRef, fontSize, onFontSizeChange, textColor, onTextColorChange, onHtmlEditor, onSelectModal }) {
+function FormatBar({ editor, open, onToggle, onClose, fontSize, onFontSizeChange, textColor, onTextColorChange, onHtmlEditor, onSelectModal }) {
   const changeFontSize = (dir) => {
     const next = Math.max(8, Math.min(96, fontSize + (dir === 'up' ? 1 : -1)));
     onFontSizeChange(next);
@@ -836,61 +838,38 @@ function FormatBar({ editor, open, onToggle, onClose, imageRef, videoRef, audioR
 
   return (
     <div style={{
-      display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2,
-      padding: '6px 8px', borderBottom: '1px solid var(--rte-border)',
+      display: 'flex', flexWrap: 'nowrap', alignItems: 'center', gap: 1,
+      padding: '3px 4px', borderBottom: '1px solid var(--rte-border)',
       background: 'var(--rte-pill)', position: 'relative', zIndex: 50,
     }}>
 
-      {/* Undo / Redo */}
-      <button className="rte-btn" title="Undo ⌘Z" disabled={!editor?.can().undo()}
-        onMouseDown={e => { e.preventDefault(); editor?.chain().focus().undo().run(); }}>
-        <UndoIcon size={17} />
-      </button>
-      <button className="rte-btn" title="Redo ⌘Y" disabled={!editor?.can().redo()}
-        onMouseDown={e => { e.preventDefault(); editor?.chain().focus().redo().run(); }}>
-        <RedoIcon size={17} />
-      </button>
 
-      <Sep />
-
-      {/* Paragraph styles */}
-      <StylesDropdown editor={editor} open={open} onToggle={onToggle} onClose={onClose} />
-
-      <Sep />
-
-      {/* Font family */}
-      <FontDropdown editor={editor} open={open} onToggle={onToggle} onClose={onClose} />
-
-      <Sep />
 
       {/* Font size */}
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 2 }}>
-        <button className="rte-btn" title="Decrease font size" style={{ fontSize: 18, minWidth: 26, height: 28 }}
+        <button className="rte-btn" title="Decrease font size" style={{ fontSize: 16, minWidth: 22, height: 24 }}
           onMouseDown={e => { e.preventDefault(); changeFontSize('down'); }}>−</button>
         <span style={{
-          minWidth: 30, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 13, border: '1px solid var(--rte-border)', borderRadius: 6, background: 'var(--rte-bar)',
+          minWidth: 24, height: 24, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 12, border: '1px solid var(--rte-border)', borderRadius: 6, background: 'var(--rte-bar)',
           padding: '0 4px',
         }}>{fontSize}</span>
-        <button className="rte-btn" title="Increase font size" style={{ fontSize: 18, minWidth: 26, height: 28 }}
+        <button className="rte-btn" title="Increase font size" style={{ fontSize: 16, minWidth: 22, height: 24 }}
           onMouseDown={e => { e.preventDefault(); changeFontSize('up'); }}>+</button>
       </div>
 
       <Sep />
 
-      {/* Bold / Italic / Underline / Strike */}
+      {/* Bold / Italic / Underline */}
       <button className={`rte-btn${editor?.isActive('bold') ? ' is-active' : ''}`} title="Bold ⌘B"
-        style={{ fontWeight: 700, fontSize: 15 }}
+        style={{ fontWeight: 700, fontSize: 14 }}
         onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleBold().run(); }}>B</button>
       <button className={`rte-btn${editor?.isActive('italic') ? ' is-active' : ''}`} title="Italic ⌘I"
-        style={{ fontStyle: 'italic', fontSize: 15, fontFamily: 'Georgia, serif' }}
+        style={{ fontStyle: 'italic', fontSize: 14, fontFamily: 'Georgia, serif' }}
         onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleItalic().run(); }}>I</button>
       <button className={`rte-btn${editor?.isActive('underline') ? ' is-active' : ''}`} title="Underline ⌘U"
-        style={{ textDecoration: 'underline', fontSize: 15 }}
+        style={{ textDecoration: 'underline', fontSize: 14 }}
         onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleUnderline().run(); }}>U</button>
-      <button className={`rte-btn${editor?.isActive('strike') ? ' is-active' : ''}`} title="Strikethrough"
-        style={{ textDecoration: 'line-through', fontSize: 15 }}
-        onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleStrike().run(); }}>S</button>
 
       {/* Text color & Highlight */}
       <ColorDropdown editor={editor} open={open} onToggle={onToggle} onClose={onClose} textColor={textColor} onTextColorChange={onTextColorChange} />
@@ -898,53 +877,18 @@ function FormatBar({ editor, open, onToggle, onClose, imageRef, videoRef, audioR
 
       <Sep />
 
-      {/* Link / Image */}
-      <button className={`rte-btn${editor?.isActive('link') ? ' is-active' : ''}`} title="Insert link ⌘K"
-        onMouseDown={e => { e.preventDefault(); insertLink(); }}>
-        <LinkIcon size={17} />
-      </button>
-      <button className="rte-btn" title="Insert image"
-        onMouseDown={e => { e.preventDefault(); imageRef.current?.click(); }}>
-        <ImageIcon size={17} />
-      </button>
-      <button className="rte-btn" title="Insert video"
-        onMouseDown={e => { e.preventDefault(); videoRef.current?.click(); }}>
-        <VideoIcon size={17} />
-      </button>
-      <button className="rte-btn" title="Insert audio"
-        onMouseDown={e => { e.preventDefault(); audioRef.current?.click(); }}>
-        <AudioIcon size={17} />
-      </button>
-
-      <Sep />
-
       {/* Alignment */}
       <AlignDropdown editor={editor} open={open} onToggle={onToggle} onClose={onClose} />
-
-      {/* Line spacing */}
-      <SpacingDropdown editor={editor} open={open} onToggle={onToggle} onClose={onClose} />
 
       {/* Lists & Indent dropdown */}
       <ListDropdown editor={editor} open={open} onToggle={onToggle} onClose={onClose} />
 
       <Sep />
 
-      {/* Subscript / Superscript */}
-      <button className={`rte-btn${editor?.isActive('subscript') ? ' is-active' : ''}`} title="Subscript"
-        onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleSubscript().run(); }}>
-        <SubIcon size={15} />
-      </button>
-      <button className={`rte-btn${editor?.isActive('superscript') ? ' is-active' : ''}`} title="Superscript"
-        onMouseDown={e => { e.preventDefault(); editor?.chain().focus().toggleSuperscript().run(); }}>
-        <SupIcon size={15} />
-      </button>
-
-      <Sep />
-
       {/* Clear formatting */}
       <button className="rte-btn" title="Clear formatting ⌘\"
         onMouseDown={e => { e.preventDefault(); editor?.chain().focus().unsetAllMarks().clearNodes().run(); }}>
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M6 7V5h13v2"/><path d="M11 5l-2 14M14 12l6 6M20 12l-6 6"/>
         </svg>
       </button>
@@ -954,7 +898,7 @@ function FormatBar({ editor, open, onToggle, onClose, imageRef, videoRef, audioR
       {/* HTML Editor */}
       <button className="rte-btn" title="HTML Editor"
         onMouseDown={e => { e.preventDefault(); onHtmlEditor && onHtmlEditor(); }}>
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
         </svg>
       </button>
@@ -1841,9 +1785,6 @@ export default function Toolbar({ editor, onUpload, onToggleTheme, theme, isFull
             open={open}
             onToggle={toggle}
             onClose={close}
-            imageRef={imageInputRef}
-            videoRef={videoInputRef}
-            audioRef={audioInputRef}
             fontSize={fontSize}
             onFontSizeChange={setFontSize}
             textColor={textColor}
